@@ -6,6 +6,9 @@
 
 {% block content %}
     <h3>Create New Post</h3>
+    <a href="{% url 'main:home' %}" style="text-decoration-line: none;">
+      <img src="{{STATIC_URL}}images/home.png" alt="home" />
+    </a>
     <form action="" method="POST">
         {% csrf_token %}
         {{ form.as_p }}

@@ -38,6 +38,7 @@ def display_post_details(request, id):
     form = PostForm(instance=post)
     context = {
         'form': form,
+        'post': post
     }
 
     # def update_post(request):
@@ -48,3 +49,14 @@ def display_post_details(request, id):
             return redirect("main:post_list")
 
     return render(request, 'main_app/post_details.html', context)
+
+
+def delete_post(request, id):
+    post = get_object_or_404(Post, id=id)
+    context = {
+        'post': post
+    }
+    if request.method == 'POST':
+        post.delete()
+        return redirect('main:post_list')
+    return render(request, 'main_app/delete_post.html', context)

@@ -6,6 +6,9 @@
 
 {% block content %}
   <h3>Post List</h3>
+  <a href="{% url 'main:home' %}" style="text-decoration-line: none;">
+    <img src="{{STATIC_URL}}images/home.png" alt="home" />
+  </a>
   <ul>
     {% for post in post_list %}
       <a href="{% url 'main:post_details' post.id %}" style="text-decoration-line: none;">

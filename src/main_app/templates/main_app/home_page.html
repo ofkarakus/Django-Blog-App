@@ -7,4 +7,12 @@
 {% block content %}
   <h1>Blog App</h1>
   <p>Welcome to home page!</p>
+  <ul>
+    <a href="{% url 'main:post_list' %}" style="text-decoration-line: none;">
+      <li>Post List</li>
+    </a>
+    <a href="{% url 'main:create_post' %}" style="text-decoration-line: none;">
+      <li>Create Post</li>
+    </a>
+  </ul>
 {% endblock content %}
