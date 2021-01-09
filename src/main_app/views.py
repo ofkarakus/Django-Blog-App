@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
-from django.template.defaultfilters import json_script
 from main_app.forms import PostForm
+from main_app.models import Post
 
 # Create your views here.
 
@@ -19,7 +19,15 @@ def create_post(request):
         if form.is_valid():
             print(request.FILES)
             post = form.save(commit=False)
-            post.author = request.user            
+            post.author = request.user
             post.save()
             return redirect('main:home')
     return render(request, 'main_app/create_post.html', context)
+
+
+def display_post_list(request):
+    post_list = Post.objects.all()
+    context = {
+        'post_list': post_list
+    }
+    return render(request, 'main_app/post_list.html', context)
