@@ -6,7 +6,11 @@
 
 {% block content %}
   <h3>Post List</h3>
-  {% for post in post_list %}
-    <p>{{ post }}</p>
-  {% endfor %}
+  <ul>
+    {% for post in post_list %}
+      <a href="{% url 'main:post_details' post.id %}" style="text-decoration-line: none;">
+        <li>{{ post }}</li>
+      </a>
+    {% endfor %}
+  </ul>
 {% endblock content %}
