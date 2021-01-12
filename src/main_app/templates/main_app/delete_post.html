@@ -9,6 +9,6 @@
         {% csrf_token %}
         <p>Are you sure that you want to delete "{{ post }}"</p>
         <input type="submit" value="Yes">
-        <a href="{% url 'main:post_details' post.id %}"><input type="button" value="No"></a>
+        <a href="{% url 'main:update_post' post.slug %}"><input type="button" value="No"></a>
     </form>
 {% endblock content %}

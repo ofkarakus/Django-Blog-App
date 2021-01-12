@@ -26,33 +26,38 @@ def create_post(request):
 
 
 def display_post_list(request):
-    post_list = Post.objects.all()
+    post_list = Post.objects.filter(status='p')
     context = {
         'post_list': post_list
     }
     return render(request, 'main_app/post_list.html', context)
 
 
-def display_post_details(request, id):
-    post = get_object_or_404(Post, id=id)
-    form = PostForm(instance=post)
+def display_post_details(request, slug):
+    post = get_object_or_404(Post, slug=slug)
     context = {
-        'form': form,
         'post': post
     }
-
-    # def update_post(request):
-    if request.method == 'POST':
-        updated_form = PostForm(request.POST, request.FILES, instance=post)
-        if updated_form.is_valid():
-            updated_form.save()
-            return redirect("main:post_list")
 
     return render(request, 'main_app/post_details.html', context)
 
 
-def delete_post(request, id):
-    post = get_object_or_404(Post, id=id)
+def update_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    form = PostForm(request.POST or None, request.FILES or None, instance=post)
+    context = {
+        'form': form,
+        'post': post
+    }
+    if form.is_valid():
+        form.save()
+        return redirect("main:post_list")
+
+    return render(request, 'main_app/update_post.html', context)
+
+
+def delete_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
     context = {
         'post': post
     }

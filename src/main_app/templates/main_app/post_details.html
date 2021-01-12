@@ -5,11 +5,8 @@
 {% endblock title %}
 
 {% block content %}
-  <h3>Post Details</h3>
-  <form action="" method="POST">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Update">
-      <a href="{% url 'main:delete_post' post.id %}"><input type="button" value="Delete"></a>
-  </form>
+  <h3>{{post.title}}</h3>
+  <img src="{{ post.image.url }}" alt="post_image" style="width: 400px;">
+  <p>{{post.content}}</p>
+  <a href="{% url 'main:update_post' post.slug %}"><input type="button" value="Change"></a>
 {% endblock content %}
