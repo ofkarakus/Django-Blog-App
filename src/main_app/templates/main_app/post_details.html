@@ -10,6 +10,13 @@
   <p>{{post.content}}</p>
   <a href="{% url 'main:update_post' post.slug %}"><input type="button" value="Change"></a>
   
+  <form action="{% url 'main:like_post' post.slug %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="user">
+    <input type="hidden" name="post">
+    <button type="submit">Like</button>{{ post.get_like_count }}
+  </form>
+  
   <form action="" method="POST">
     {% csrf_token %}
     {{ form }}

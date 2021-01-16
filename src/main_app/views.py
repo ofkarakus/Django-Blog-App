@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from main_app.forms import CommentForm, PostForm
-from main_app.models import Post
+from main_app.models import Post, Like
 
 # Create your views here.
 
@@ -36,6 +36,8 @@ def display_post_list(request):
 def display_post_details(request, slug):
     form = CommentForm()
     post = get_object_or_404(Post, slug=slug)
+
+    # def commenton_thepost()
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -76,3 +78,14 @@ def delete_post(request, slug):
         post.delete()
         return redirect('main:post_list')
     return render(request, 'main_app/delete_post.html', context)
+
+
+def like_post(request, slug):
+    if request.method == "POST":
+        post = get_object_or_404(Post, slug=slug)
+        like = Like.objects.filter(post=post, user=request.user)
+        if like.exists():
+            like.delete()
+        else: 
+            Like.objects.create(user=request.user, post=post)
+        return redirect('main:post_details', slug=slug)
