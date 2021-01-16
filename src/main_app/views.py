@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from main_app.forms import PostForm
+from main_app.forms import CommentForm, PostForm
 from main_app.models import Post
 
 # Create your views here.
@@ -34,9 +34,20 @@ def display_post_list(request):
 
 
 def display_post_details(request, slug):
+    form = CommentForm()
     post = get_object_or_404(Post, slug=slug)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.post = post
+            comment.save()
+            return redirect("main:post_details", slug=slug)
+            # return redirect(request.path)
     context = {
-        'post': post
+        'post': post,
+        'form': form
     }
 
     return render(request, 'main_app/post_details.html', context)

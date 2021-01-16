@@ -46,6 +46,9 @@ class Post(models.Model):
     
     def get_postview_count(self):
         return self.postview_set.count()
+    
+    def get_comments(self):
+        return self.comment_set.all()
 
 
 class Comment(models.Model):
@@ -56,6 +59,9 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+    class Meta:
+        ordering = ('-time_stamp',)        
 
 
 class Like(models.Model):

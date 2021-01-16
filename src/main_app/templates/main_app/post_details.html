@@ -9,4 +9,19 @@
   <img src="{{ post.image.url }}" alt="post_image" style="width: 400px;">
   <p>{{post.content}}</p>
   <a href="{% url 'main:update_post' post.slug %}"><input type="button" value="Change"></a>
+  
+  <form action="" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Comment</button>
+  </form>
+
+  {% for comment in post.get_comments %}
+    <hr>
+    <div>
+      <p>{{ comment.content }}</p>
+      <p>comment by {{ comment }}</p>
+    </div>
+  {% endfor %}
+
 {% endblock content %}
