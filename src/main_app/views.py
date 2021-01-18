@@ -1,3 +1,4 @@
+from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from main_app.forms import CommentForm, PostForm
 from main_app.models import Post, Like
@@ -62,9 +63,12 @@ def update_post(request, slug):
         'form': form,
         'post': post
     }
+    if request.user.id != post.author.id:
+        return redirect("main:post_list")
+        # return HttpResponse("You're not authorized!")
     if form.is_valid():
         form.save()
-        return redirect("main:post_list")
+        return redirect('main:post_details', slug=slug)
 
     return render(request, 'main_app/update_post.html', context)
 
@@ -74,6 +78,9 @@ def delete_post(request, slug):
     context = {
         'post': post
     }
+    if request.user.id != post.author.id:
+        return redirect("main:post_list")
+        # return HttpResponse("You're not authorized!")
     if request.method == 'POST':
         post.delete()
         return redirect('main:post_list')
@@ -86,6 +93,6 @@ def like_post(request, slug):
         like = Like.objects.filter(post=post, user=request.user)
         if like.exists():
             like.delete()
-        else: 
+        else:
             Like.objects.create(user=request.user, post=post)
         return redirect('main:post_details', slug=slug)

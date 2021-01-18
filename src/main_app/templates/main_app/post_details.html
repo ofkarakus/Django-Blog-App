@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block title %}
   Post Details
@@ -8,8 +9,11 @@
   <h3>{{post.title}}</h3>
   <img src="{{ post.image.url }}" alt="post_image" style="width: 400px;">
   <p>{{post.content}}</p>
-  <a href="{% url 'main:update_post' post.slug %}"><input type="button" value="Change"></a>
-  
+
+  {% if user.id == post.author.id %}
+    <a href="{% url 'main:update_post' post.slug %}"><input type="button" value="Change"></a>
+  {% endif %}
+
   <form action="{% url 'main:like_post' post.slug %}" method="POST">
     {% csrf_token %}
     <input type="hidden" name="user">
@@ -19,7 +23,7 @@
   
   <form action="" method="POST">
     {% csrf_token %}
-    {{ form }}
+    {{ form|crispy }}
     <button type="submit">Comment</button>
   </form>
 
