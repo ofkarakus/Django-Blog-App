@@ -2,6 +2,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from main_app.forms import CommentForm, PostForm
 from main_app.models import Post, Like
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -9,7 +10,7 @@ from main_app.models import Post, Like
 def display_home_page(request):
     return render(request, 'main_app/home_page.html')
 
-
+@login_required()
 def create_post(request):
     form = PostForm()
     context = {
@@ -55,7 +56,7 @@ def display_post_details(request, slug):
 
     return render(request, 'main_app/post_details.html', context)
 
-
+@login_required()
 def update_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
     form = PostForm(request.POST or None, request.FILES or None, instance=post)
@@ -72,7 +73,7 @@ def update_post(request, slug):
 
     return render(request, 'main_app/update_post.html', context)
 
-
+@login_required()
 def delete_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
     context = {
@@ -86,7 +87,7 @@ def delete_post(request, slug):
         return redirect('main:post_list')
     return render(request, 'main_app/delete_post.html', context)
 
-
+@login_required()
 def like_post(request, slug):
     if request.method == "POST":
         post = get_object_or_404(Post, slug=slug)

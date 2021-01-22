@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
-from .models import Profile
 from .forms import RegistrationForm, UserUpdateForm, ProfileUpdateForm
 from pprint import pprint
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -19,7 +19,7 @@ def register(request):
 
     return render(request, 'user_app/register.html', context)
 
-
+@login_required()
 def display_profile_page(request):
     user_form = UserUpdateForm(request.POST or None, instance=request.user)
     profile_form = ProfileUpdateForm(
