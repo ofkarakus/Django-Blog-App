@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from main_app.forms import CommentForm, PostForm
 from main_app.models import Post, Like
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your views here.
 
@@ -23,6 +24,7 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            messages.success(request, "Post created successfully!")
             return redirect('main:home')
     return render(request, 'main_app/create_post.html', context)
 
@@ -65,10 +67,11 @@ def update_post(request, slug):
         'post': post
     }
     if request.user.id != post.author.id:
+        messages.warning(request ,"You're not authorized!")
         return redirect("main:post_list")
-        # return HttpResponse("You're not authorized!")
     if form.is_valid():
         form.save()
+        messages.success(request, "Post updated successfully!")
         return redirect('main:post_details', slug=slug)
 
     return render(request, 'main_app/update_post.html', context)
@@ -80,10 +83,11 @@ def delete_post(request, slug):
         'post': post
     }
     if request.user.id != post.author.id:
+        messages.warning(request ,"You're not authorized!")
         return redirect("main:post_list")
-        # return HttpResponse("You're not authorized!")
     if request.method == 'POST':
         post.delete()
+        messages.success(request, "Post deleted successfully!")
         return redirect('main:post_list')
     return render(request, 'main_app/delete_post.html', context)
 
@@ -97,3 +101,6 @@ def like_post(request, slug):
         else:
             Like.objects.create(user=request.user, post=post)
         return redirect('main:post_details', slug=slug)
+    # The view main_app.views.like_post didn't return an HttpResponse object.
+    # It returned None instead. ==> Request Method: GET
+    return redirect('main:post_details', slug=slug)  # <== solution
