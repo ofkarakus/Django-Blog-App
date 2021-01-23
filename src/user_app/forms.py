@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordResetForm, UserCreationForm
 from .models import Profile
 
 
@@ -32,3 +32,15 @@ class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email')
+
+          
+# TO OVERWRITE A DEFAULT FORM  (use 'clean_' as a prefix in method name)
+class PasswordResetCheckedEmailForm(PasswordResetForm):
+    
+    # ADDED EXTRA VALIDATION
+    # overwritten PasswordResetForm (to check if entered email is registered.)
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError("There is not such an email address!")
+        return email
