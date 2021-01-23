@@ -1,7 +1,7 @@
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from main_app.forms import CommentForm, PostForm
-from main_app.models import Post, Like
+from main_app.models import Post, Like, PostView
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -10,6 +10,7 @@ from django.contrib import messages
 
 def display_home_page(request):
     return render(request, 'main_app/home_page.html')
+
 
 @login_required()
 def create_post(request):
@@ -56,7 +57,13 @@ def display_post_details(request, slug):
         'form': form
     }
 
+    # POSTVIEW LOGIC
+    if request.user.is_authenticated:
+        PostView.objects.get_or_create(user=request.user, post=post)
+        # get_or_create() => create if there is not
+
     return render(request, 'main_app/post_details.html', context)
+
 
 @login_required()
 def update_post(request, slug):
@@ -67,7 +74,7 @@ def update_post(request, slug):
         'post': post
     }
     if request.user.id != post.author.id:
-        messages.warning(request ,"You're not authorized!")
+        messages.warning(request, "You're not authorized!")
         return redirect("main:post_list")
     if form.is_valid():
         form.save()
@@ -76,6 +83,7 @@ def update_post(request, slug):
 
     return render(request, 'main_app/update_post.html', context)
 
+
 @login_required()
 def delete_post(request, slug):
     post = get_object_or_404(Post, slug=slug)
@@ -83,13 +91,14 @@ def delete_post(request, slug):
         'post': post
     }
     if request.user.id != post.author.id:
-        messages.warning(request ,"You're not authorized!")
+        messages.warning(request, "You're not authorized!")
         return redirect("main:post_list")
     if request.method == 'POST':
         post.delete()
         messages.success(request, "Post deleted successfully!")
         return redirect('main:post_list')
     return render(request, 'main_app/delete_post.html', context)
+
 
 @login_required()
 def like_post(request, slug):
